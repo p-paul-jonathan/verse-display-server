@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bible Verse Selector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-900">
+
+  <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-lg">
+    <h2 class="text-3xl font-bold text-center mb-8">📖 Bible Verse Selector</h2>
+
+    <form method="POST" class="space-y-5">
+      <div>
+        <label for="book" class="block text-sm font-semibold mb-2">Book</label>
+        <select id="book" name="book"
+          class="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 px-3 py-2 border shadow-md">
+          <option value="">-- Choose a Book --</option>
+          {% for book in books %}
+            <option value="{{ book.english }}">{{ book.english }} | {{ book.hindi }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="chapter" class="block text-sm font-semibold mb-2">Chapter</label>
+        <select id="chapter" name="chapter"
+          class="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 px-3 py-2 border shadow-md">
+          <option value="">-- Choose Chapter --</option>
+          {% for i in range(1, 151) %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="verses" class="block text-sm font-semibold mb-2">Verse(s)</label>
+        <input type="text" id="verses" name="verses"
+          placeholder="e.g. 1, 2-5, 10"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+          class="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 px-3 py-2 border shadow-md">
+      </div>
+
+      <div class="flex justify-between items-center pt-4">
+        <button type="submit" name="action" value="submit"
+          class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition-all duration-200 ease-out hover:scale-[1.02]">
+          Save
+        </button>
+        <button type="submit" name="action" value="clear"
+          class="px-6 py-3 border border-red-500 text-red-600 hover:bg-red-50 font-semibold rounded-xl transition-all duration-200 ease-out hover:scale-[1.02]">
+          Clear
+        </button>
+      </div>
+    </form>
+
+    {% if selection %}
+      <div class="mt-8 p-4 rounded-xl bg-purple-50 border-l-4 border-purple-500 text-center text-lg font-medium shadow-sm">
+        ✅ Current:
+        <strong class="text-gray-900">{{ selection.book_en }} | {{ selection.book_hi }}</strong>
+        {{ selection.chapter }}:{{ selection.verses }} selected
+      </div>
+
+      <div class="mt-6 flex justify-center">
+        <a href="/display" target="_blank"
+          class="inline-block px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600
+                 hover:from-blue-600 hover:to-purple-600 text-white text-lg font-bold shadow-[0_0_20px_rgba(147,51,234,0.4)]
+                 hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] transition-all duration-300 ease-out transform hover:scale-105 active:scale-95">
+          📖 View Verse
+        </a>
+      </div>
+    {% endif %}
+
+    {% if message %}
+      <div class="mt-6 text-center text-green-600 font-semibold">{{ message }}</div>
+    {% endif %}
+  </div>
+
+</body>
+</html>
