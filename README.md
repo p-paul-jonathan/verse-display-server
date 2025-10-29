@@ -76,4 +76,3 @@ This will do the following things
     - Display Screen when Cache cleared
         ![Main Screen](./screenshots/display_screen_when_cache_is_cleared.png)
 
-> TODO: Add a dark mode?

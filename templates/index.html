@@ -2,19 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bible Verse Selector</title>
+  <title>Verse Display Server</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-900">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    };
 
-  <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-lg">
-    <h2 class="text-3xl font-bold text-center mb-8">📖 Bible Verse Selector</h2>
+    // Apply saved theme before render
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-gray-100 transition-colors duration-500">
+
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 w-full max-w-lg transition-colors duration-500">
+    <h2 class="text-3xl font-bold text-center mb-8">📖 Verse Display Server</h2>
 
     <form method="POST" class="space-y-5">
       <div>
         <label for="book" class="block text-sm font-semibold mb-2">Book</label>
         <select id="book" name="book"
-          class="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 px-3 py-2 border shadow-md">
+          class="w-full rounded-xl border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 dark:text-gray-100 dark:bg-gray-800 px-3 py-2 border shadow-md">
           <option value="">-- Choose a Book --</option>
           {% for book in books %}
             <option value="{{ book.english }}">{{ book.english }} | {{ book.hindi }}</option>
@@ -25,7 +41,7 @@
       <div>
         <label for="chapter" class="block text-sm font-semibold mb-2">Chapter</label>
         <select id="chapter" name="chapter"
-          class="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 px-3 py-2 border shadow-md">
+          class="w-full rounded-xl border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 dark:text-gray-100 dark:bg-gray-800 px-3 py-2 border shadow-md">
           <option value="">-- Choose Chapter --</option>
           {% for i in range(1, 151) %}
             <option value="{{ i }}">{{ i }}</option>
@@ -38,7 +54,7 @@
         <input type="text" id="verses" name="verses"
           placeholder="e.g. 1, 2-5, 10"
           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-          class="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 px-3 py-2 border shadow-md">
+          class="w-full rounded-xl border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 dark:text-gray-100 dark:bg-gray-800 px-3 py-2 border shadow-md">
       </div>
 
       <div class="flex justify-between items-center pt-4">
@@ -47,16 +63,16 @@
           Save
         </button>
         <button type="submit" name="action" value="clear"
-          class="px-6 py-3 border border-red-500 text-red-600 hover:bg-red-50 font-semibold rounded-xl transition-all duration-200 ease-out hover:scale-[1.02]">
+          class="px-6 py-3 border border-red-500 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold rounded-xl transition-all duration-200 ease-out hover:scale-[1.02]">
           Clear
         </button>
       </div>
     </form>
 
     {% if selection %}
-      <div class="mt-8 p-4 rounded-xl bg-purple-50 border-l-4 border-purple-500 text-center text-lg font-medium shadow-sm">
+      <div class="mt-8 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/30 border-l-4 border-purple-500 text-center text-lg font-medium shadow-sm">
         ✅ Current:
-        <strong class="text-gray-900">{{ selection.book_en }} | {{ selection.book_hi }}</strong>
+        <strong class="text-gray-900 dark:text-gray-100">{{ selection.book_en }} | {{ selection.book_hi }}</strong>
         {{ selection.chapter }}:{{ selection.verses }} selected
       </div>
 
@@ -71,9 +87,45 @@
     {% endif %}
 
     {% if message %}
-      <div class="mt-6 text-center text-green-600 font-semibold">{{ message }}</div>
+      <div class="mt-6 text-center text-green-600 dark:text-green-400 font-semibold">{{ message }}</div>
     {% endif %}
   </div>
+
+  <!-- Floating Theme Toggle Button -->
+  <button id="theme-toggle"
+    class="fixed bottom-6 left-6 p-3 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-lg hover:scale-110 transition-all duration-200 ease-out"
+    title="Toggle Dark Mode">
+    🌙
+  </button>
+
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    function setTheme(mode) {
+      if (mode === 'dark') {
+        html.classList.add('dark');
+        localStorage.theme = 'dark';
+        toggleBtn.textContent = '🌞';
+      } else {
+        html.classList.remove('dark');
+        localStorage.theme = 'light';
+        toggleBtn.textContent = '🌙';
+      }
+    }
+
+    // Initialize correct icon
+    if (html.classList.contains('dark')) {
+      toggleBtn.textContent = '🌞';
+    } else {
+      toggleBtn.textContent = '🌙';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      const isDark = html.classList.contains('dark');
+      setTheme(isDark ? 'light' : 'dark');
+    });
+  </script>
 
 </body>
 </html>
