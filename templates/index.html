@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Verse Display Server</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class' };
 
-    // Apply saved theme before render
     if (
       localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
     ) {
       document.documentElement.classList.add('dark');
     } else {
@@ -21,14 +23,22 @@
 
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-gray-100 transition-colors duration-500">
 
-  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 w-full max-w-lg transition-colors duration-500">
-    <h2 class="text-3xl font-bold text-center mb-8">📖 Verse Display Server</h2>
+  <div class="w-full max-w-md sm:max-w-lg mx-4 bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-5 sm:p-8 transition-colors duration-500">
 
-    <form method="POST" class="space-y-5">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
+      📖 Verse Display Server
+    </h2>
+
+    <form method="POST" class="space-y-4 sm:space-y-5">
+
+      <!-- Book -->
       <div>
         <label for="book" class="block text-sm font-semibold mb-2">Book</label>
         <select id="book" name="book"
-          class="w-full rounded-xl border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 dark:text-gray-100 dark:bg-gray-800 px-3 py-2 border shadow-md">
+          class="w-full text-base rounded-xl border border-gray-300 dark:border-gray-600
+                 px-3 py-2 shadow-md
+                 focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                 text-gray-800 dark:text-gray-100 dark:bg-gray-800">
           <option value="">-- Choose a Book --</option>
           {% for book in books %}
             <option value="{{ book.english }}"
@@ -39,10 +49,14 @@
         </select>
       </div>
 
+      <!-- Chapter -->
       <div>
         <label for="chapter" class="block text-sm font-semibold mb-2">Chapter</label>
         <select id="chapter" name="chapter"
-          class="w-full rounded-xl border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 dark:text-gray-100 dark:bg-gray-800 px-3 py-2 border shadow-md">
+          class="w-full text-base rounded-xl border border-gray-300 dark:border-gray-600
+                 px-3 py-2 shadow-md
+                 focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                 text-gray-800 dark:text-gray-100 dark:bg-gray-800">
           <option value="">-- Choose Chapter --</option>
           {% for i in range(1, 151) %}
             <option value="{{ i }}"
@@ -53,52 +67,90 @@
         </select>
       </div>
 
+      <!-- Verses -->
       <div>
         <label for="verses" class="block text-sm font-semibold mb-2">Verse(s)</label>
-        <input type="text" id="verses" name="verses"
+        <input
+          type="text"
+          id="verses"
+          name="verses"
+          inputmode="numeric"
+          pattern="[0-9,\-\s]*"
           placeholder="e.g. 1, 2-5, 10"
-          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
           value="{% if selection %}{{ selection.verses }}{% endif %}"
-          class="w-full rounded-xl border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-800 dark:text-gray-100 dark:bg-gray-800 px-3 py-2 border shadow-md">
+          class="w-full text-base rounded-xl border border-gray-300 dark:border-gray-600
+                 px-3 py-2 shadow-md
+                 focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                 text-gray-800 dark:text-gray-100 dark:bg-gray-800" />
       </div>
 
-      <div class="flex justify-between items-center pt-4">
-        <button type="submit" name="action" value="submit"
-          class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition-all duration-200 ease-out hover:scale-[1.02]">
+      <!-- Actions -->
+      <div class="pt-4 flex flex-col sm:flex-row gap-3 sm:justify-between">
+        <button
+          type="submit"
+          name="action"
+          value="submit"
+          class="w-full sm:w-auto px-6 py-3 bg-purple-600 hover:bg-purple-700
+                 text-white font-semibold rounded-xl shadow-md
+                 transition-all duration-200 hover:scale-[1.02]">
           Save
         </button>
-        <button type="submit" name="action" value="clear"
-          class="px-6 py-3 border border-red-500 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold rounded-xl transition-all duration-200 ease-out hover:scale-[1.02]">
+
+        <button
+          type="submit"
+          name="action"
+          value="clear"
+          class="w-full sm:w-auto px-6 py-3 border border-red-500
+                 text-red-600 dark:text-red-400
+                 hover:bg-red-50 dark:hover:bg-red-900/20
+                 font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]">
           Clear
         </button>
       </div>
     </form>
 
     {% if selection %}
-      <div class="mt-8 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/30 border-l-4 border-purple-500 text-center text-lg font-medium shadow-sm">
+      <div class="mt-6 sm:mt-8 p-3 sm:p-4 rounded-xl bg-purple-50 dark:bg-purple-900/30
+                  border-l-4 border-purple-500 text-center text-base sm:text-lg
+                  font-medium shadow-sm">
         ✅ Current:
-        <strong class="text-gray-900 dark:text-gray-100">{{ selection.book_en }} | {{ selection.book_hi }}</strong>
-        {{ selection.chapter }}:{{ selection.verses }} selected
+        <strong class="text-gray-900 dark:text-gray-100">
+          {{ selection.book_en }} | {{ selection.book_hi }}
+        </strong>
+        {{ selection.chapter }}:{{ selection.verses }}
       </div>
 
-      <div class="mt-6 flex justify-center">
+      <div class="mt-5 sm:mt-6 flex justify-center px-2">
         <a href="/display" target="_blank"
-          class="inline-block px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600
-                 hover:from-blue-600 hover:to-purple-600 text-white text-lg font-bold shadow-[0_0_20px_rgba(147,51,234,0.4)]
-                 hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] transition-all duration-300 ease-out transform hover:scale-105 active:scale-95">
+          class="inline-block w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4
+                 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600
+                 hover:from-blue-600 hover:to-purple-600
+                 text-white text-base sm:text-lg font-bold text-center
+                 shadow-[0_0_20px_rgba(147,51,234,0.4)]
+                 hover:shadow-[0_0_30px_rgba(99,102,241,0.6)]
+                 transition-all duration-300 hover:scale-105 active:scale-95">
           📖 View Verse
         </a>
       </div>
     {% endif %}
 
     {% if message %}
-      <div class="mt-6 text-center text-green-600 dark:text-green-400 font-semibold">{{ message }}</div>
+      <div class="mt-5 text-center text-green-600 dark:text-green-400 font-semibold">
+        {{ message }}
+      </div>
     {% endif %}
   </div>
 
-  <!-- Floating Theme Toggle -->
+  <!-- Theme Toggle -->
   <button id="theme-toggle"
-    class="fixed bottom-6 left-6 p-3 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-lg hover:scale-110 transition-all duration-200 ease-out text-4xl"
+    class="fixed bottom-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto
+           p-3 rounded-full bg-gray-200 dark:bg-gray-700
+           text-gray-800 dark:text-gray-100 text-3xl
+           shadow-lg hover:scale-110 transition-all duration-200"
     title="Toggle Dark Mode">
     🌙
   </button>
@@ -119,12 +171,10 @@
       }
     }
 
-    // Initialize correct icon
     toggleBtn.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
 
     toggleBtn.addEventListener('click', () => {
-      const isDark = html.classList.contains('dark');
-      setTheme(isDark ? 'light' : 'dark');
+      setTheme(html.classList.contains('dark') ? 'light' : 'dark');
     });
   </script>
 

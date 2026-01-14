@@ -30,11 +30,11 @@ touch tmp/.gitkeep
 # Export environment variables for Flask
 export FLASK_APP=app.py
 export FLASK_ENV=development
-export FLASK_RUN_PORT=5050
+export FLASK_RUN_PORT=3000
 
 echo ""
 echo "✅ Flask setup complete!"
-echo "🌐 Starting server at http://127.0.0.1:5050 ..."
+echo "🌐 Starting server at http://127.0.0.1:3000 ..."
 echo ""
 
 # Start the Flask server
